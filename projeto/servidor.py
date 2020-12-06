@@ -18,108 +18,124 @@ import logging
 import grpc
 import projeto_pb2
 import projeto_pb2_grpc
+import RWLock
 
+lock = RWLock.RWLock()
 dicionario = {}
 
 
 class Greeter(projeto_pb2_grpc.GreeterServicer):
 
     
-    def set(self, request, context):
-        dicionario[int(request.chave)] = (request.versao,request.timestamp,request.dados)             
+    def set(self, request, context):            
                
         print("#############State server: ##############")
-        if request.chave in dicionario: 
-            print(dicionario)            
-            #Armazenamento em disco com recuperação de dados no caso de falhas:
-            arquivo = open('backup.txt','w')
-            arquivo.write(str(dicionario)+"\n")
-            arquivo.close()
-            return projeto_pb2.MessageReply(e='SUCCESS',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
-        else:
-            return projeto_pb2.MessageReply(e='ERROR',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
-            
+        lock.writer_acquire()
+
+        try:
+            if request.chave in dicionario:
+                return projeto_pb2.MessageReply(e='ERROR',
+                versao= dicionario[request.chave][0], timestamp= dicionario[request.chave][1],
+                dados=dicionario[request.chave][2])
+            else:
+                dicionario[request.chave] = (1,request.timestamp,request.dados)
+                print(dicionario)
+
+                return projeto_pb2.MessageReply(e='SUCCESS',
+                versao=None, timestamp= None,
+                dados=None)
+        finally:
+            lock.writer_release()
+
     def get(self, request, context):
-        if request.chave in dicionario:
-            return projeto_pb2.MessageReply(e='SUCCESS',
-            versao=None, timestamp= None,
-            dados=None)
-        else:
-            return projeto_pb2.MessageReply(e='ERROR',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
+
+        lock.reader_acquire()
+        try:
+            if request.chave in dicionario:
+                return projeto_pb2.MessageReply(e='SUCCESS',
+                versao= dicionario[request.chave][0], timestamp= dicionario[request.chave][1],
+                dados=dicionario[request.chave][2])
+
+            else:
+                return projeto_pb2.MessageReply(e='ERROR',
+                versao=None, timestamp= None,
+                dados=None)
+        finally:
+            lock.reader_release()
     
     def delete(self, request, context):
         print("#############State server: ##############")
         
-        if request.chave in dicionario:            
-            del dicionario[int(request.chave)]  
-            print(dicionario)
-            #Armazenamento em disco com recuperação de dados no caso de falhas:
-            arquivo = open('backup.txt','w')
-            arquivo.write(str(dicionario)+"\n")
-            arquivo.close()
-            return projeto_pb2.MessageReply(e='SUCCESS',
-            versao=None, timestamp= None,
-            dados=None)
-        else:
-            return projeto_pb2.MessageReply(e='ERROR',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
+        lock.writer_acquire()
+        try:
+            if request.chave in dicionario:            
+                del dicionario[int(request.chave)]  
+                print(dicionario)
+
+                return projeto_pb2.MessageReply(e='SUCCESS',
+                versao=None, timestamp= None,
+                dados=None)
+            else:
+                return projeto_pb2.MessageReply(e='ERROR',
+                versao=None, timestamp=None,
+                dados=None)
+        finally:
+            lock.writer_release()
     
     def del_vers(self, request, context):
         print("#############State server: ##############")
         
-        if request.chave in dicionario:
-            if  request.versao == dicionario[int(request.chave)][0]:
-                del dicionario[int(request.chave)]     
-                print(dicionario)
-                #Armazenamento em disco com recuperação de dados no caso de falhas:
-                arquivo = open('backup.txt','w')
-                arquivo.write(str(dicionario)+"\n")
-                arquivo.close()
-                return projeto_pb2.MessageReply(e='SUCCESS',
-                versao=None, timestamp= None,
-                dados=None)
+        lock.writer_acquire()
+        try:
+            if request.chave in dicionario:
+                if  request.versao == dicionario[int(request.chave)][0]:
+                    del dicionario[request.chave]     
+                    print(dicionario)
+
+                    return projeto_pb2.MessageReply(e='SUCCESS',
+                    versao=None, timestamp= None,
+                    dados=None)
+                else:
+                    print(dicionario)
+                    
+                    return projeto_pb2.MessageReply(e='ERROR_WV',
+                    versao= dicionario[request.chave][0], timestamp= dicionario[request.chave][1],
+                    dados=dicionario[request.chave][2])
+                    
             else:
                 print(dicionario)
-                return projeto_pb2.MessageReply(e='ERROR_WV',
-                versao=request.versao, timestamp= request.timestamp,
-                dados=request.dados)    
-                  
-        else:
-            print(dicionario)
-            return projeto_pb2.MessageReply(e='ERROR_NE',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
-    
+                
+                return projeto_pb2.MessageReply(e='ERROR_NE',
+                versao=None, timestamp= None,
+                dados=None)
+        finally:
+            lock.writer_release()
+
     def testandset(self, request, context):
-        if request.chave in dicionario:
-            if  request.versao > dicionario[int(request.chave)][0]:
-                dicionario[int(request.chave)] = (request.versao,request.timestamp,request.dados)
-                print(dicionario)
-                #Armazenamento em disco com recuperação de dados no caso de falhas:
-                arquivo = open('backup.txt','w')
-                arquivo.write(str(dicionario)+"\n")
-                arquivo.close()
-                return projeto_pb2.MessageReply(e='SUCCESS',
-                versao=None, timestamp= None,
-                dados=None)
+        lock.writer_acquire()
+        try:
+            if request.chave in dicionario:
+                if  request.versao == dicionario[request.chave][0]:
+                    dicionario[request.chave] = (request.versao+1,request.timestamp,request.dados)
+                    print(dicionario)
+
+                    return projeto_pb2.MessageReply(e='SUCCESS',
+                    versao=request.versao, timestamp= request.timestamp,
+                    dados=request.dados)
+                else:
+                    print(dicionario)
+
+                    return projeto_pb2.MessageReply(e='ERROR_WV',
+                    versao= dicionario[request.chave][0], timestamp= dicionario[request.chave][1],
+                    dados=dicionario[request.chave][2])
             else:
                 print(dicionario)
-                return projeto_pb2.MessageReply(e='ERROR_WV',
-                versao=request.versao, timestamp= request.timestamp,
-                dados=request.dados)    
-                  
-        else:
-            print(dicionario)
-            return projeto_pb2.MessageReply(e='ERROR_NE',
-            versao=request.versao, timestamp= request.timestamp,
-            dados=request.dados)
+                return projeto_pb2.MessageReply(e='ERROR_NE',
+                versao=None, timestamp= None,
+                dados=None)
+        finally:
+            lock.writer_release()
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
