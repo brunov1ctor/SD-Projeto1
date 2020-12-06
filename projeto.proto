@@ -25,7 +25,7 @@ service Greeter {
   
   rpc set(ChaveValor) returns (MessageReply) {}
   rpc get(ChaveValor) returns (MessageReply) {}
-  rpc delete(ChaveValor) returns (MessageReply) {}
+  rpc del(ChaveValor) returns (MessageReply) {}
   rpc del_vers(ChaveValor) returns (MessageReply) {}
   rpc testandset(ChaveValor) returns (MessageReply) {}
 }
