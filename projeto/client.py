@@ -14,6 +14,8 @@
 """The Python implementation of the GRPC helloworld.Greeter client."""
 
 from __future__ import print_function
+
+import datetime
 import logging
 
 import grpc
@@ -84,7 +86,8 @@ def menuChaveValor(): #Pede para o usuário inserir um par chave valor corretame
   #return (1,(2,3,bytes(4)))
   chave = menuChave('')
   valor = menuChave('', 'versão')
-  timestamp = menuChave('', 'timestamp')
+  #  timestamp = menuChave('', 'timestamp')
+  timestamp = int(str(datetime.datetime.now().timestamp()).replace('.', ''));
   dados = bytes(input('Insira os dados desejados:\n'),'utf-8')
   return (chave,(valor, timestamp, dados))
 
