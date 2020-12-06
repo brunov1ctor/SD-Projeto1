@@ -19,10 +19,55 @@ import grpc
 import projeto_pb2
 import projeto_pb2_grpc
 import RWLock
+import threading
+import time
+import ast
 
 lock = RWLock.RWLock()
 dicionario = {}
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------IO MODULE----------------------------------------------------------
+
+class ThreadRead (threading.Thread):
+   def __init__(self):
+      threading.Thread.__init__(self)
+
+   def run(self):
+      print ("Starting ThreadRead")
+      read_db()
+      print ("Exiting ThreadRead")
+
+class ThreadWrite(threading.Thread):
+    def __init__(self,counter):
+        threading.Thread.__init__(self)
+        self.counter = counter
+    def run(self):
+        print('Starting ThreadWrite')
+        write_db(self.counter)
+        print('Exiting ThreadWrite')
+
+def read_db():
+    lock.writer_acquire
+    try:
+        f = open('backup.txt','r')
+        global dicionario
+        dicionario = ast.literal_eval(f.read())
+    finally:
+        lock.writer_release
+
+def write_db(t):
+    while True:
+        time.sleep(t)
+        lock.writer_acquire()
+        try:
+            f = open('backup.txt','w')
+            f.write(str(dicionario))
+            f.close()
+        finally:
+            lock.writer_release()
+        
+#------------------------------------------------------------------------------------------------------------------------------------
 
 class Greeter(projeto_pb2_grpc.GreeterServicer):
 
@@ -147,4 +192,10 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig()
+    thread_read = ThreadRead()
+    thread_write = ThreadWrite(10)
+    thread_read.setDaemon(True)
+    thread_write.setDaemon(True)
+    thread_read.start()
+    thread_write.start()
     serve()
