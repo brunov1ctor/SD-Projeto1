@@ -10,4 +10,4 @@ Guilherme Figueiredo,
 Wellinngton Cesar,
 Vinicius Henrique.
 
-link do video no youtube: https://youtu.be/LS9xlc1G6ck
+Link do vídeo de apresentação no youtube: https://youtu.be/YZC6RLeNBHg
