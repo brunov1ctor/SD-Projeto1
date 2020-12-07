@@ -61,7 +61,7 @@ def menu():
         resposta2 = input('Deseja especificar a versão? Responda s/n:\n')
         if resposta2.lower() in ['s','sim','yes','y']:
           versao = menuChave('deletar','versão')
-          response = stub.del_vers(projeto_pb2.ChaveValor(chave=chave, versao=versao, timestamp=valor[1], dados=valor[2]))
+          response = stub.delete(projeto_pb2.ChaveValor(chave=chave, versao=versao, timestamp=valor[1], dados=valor[2]))
           print("Tentou deletar a chave. Resposta do servidor: " + response.e)
           break
         elif resposta2.lower() in ['n','nao','não','no','n']:

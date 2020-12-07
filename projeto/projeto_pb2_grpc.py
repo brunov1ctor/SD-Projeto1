@@ -29,11 +29,6 @@ class GreeterStub(object):
                 request_serializer=projeto__pb2.ChaveValor.SerializeToString,
                 response_deserializer=projeto__pb2.MessageReply.FromString,
                 )
-        self.del_vers = channel.unary_unary(
-                '/projeto.Greeter/del_vers',
-                request_serializer=projeto__pb2.ChaveValor.SerializeToString,
-                response_deserializer=projeto__pb2.MessageReply.FromString,
-                )
         self.testandset = channel.unary_unary(
                 '/projeto.Greeter/testandset',
                 request_serializer=projeto__pb2.ChaveValor.SerializeToString,
@@ -62,12 +57,6 @@ class GreeterServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def del_vers(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def testandset(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -89,11 +78,6 @@ def add_GreeterServicer_to_server(servicer, server):
             ),
             'delete': grpc.unary_unary_rpc_method_handler(
                     servicer.delete,
-                    request_deserializer=projeto__pb2.ChaveValor.FromString,
-                    response_serializer=projeto__pb2.MessageReply.SerializeToString,
-            ),
-            'del_vers': grpc.unary_unary_rpc_method_handler(
-                    servicer.del_vers,
                     request_deserializer=projeto__pb2.ChaveValor.FromString,
                     response_serializer=projeto__pb2.MessageReply.SerializeToString,
             ),
@@ -158,23 +142,6 @@ class Greeter(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/projeto.Greeter/delete',
-            projeto__pb2.ChaveValor.SerializeToString,
-            projeto__pb2.MessageReply.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def del_vers(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/projeto.Greeter/del_vers',
             projeto__pb2.ChaveValor.SerializeToString,
             projeto__pb2.MessageReply.FromString,
             options, channel_credentials,

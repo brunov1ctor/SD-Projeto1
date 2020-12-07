@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\030io.grpc.examples.projetoB\014ProjetoProtoP\001\242\002\003HLW',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rprojeto.proto\x12\x07projeto\"M\n\nChaveValor\x12\r\n\x05\x63have\x18\x01 \x01(\x01\x12\x0e\n\x06versao\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x12\r\n\x05\x64\x61\x64os\x18\x04 \x01(\x0c\"K\n\x0cMessageReply\x12\t\n\x01\x65\x18\x01 \x01(\t\x12\x0e\n\x06versao\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x12\r\n\x05\x64\x61\x64os\x18\x04 \x01(\x0c\x32\xa1\x02\n\x07Greeter\x12\x33\n\x03set\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12\x33\n\x03get\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12\x36\n\x06\x64\x65lete\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12\x38\n\x08\x64\x65l_vers\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12:\n\ntestandset\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x42\x30\n\x18io.grpc.examples.projetoB\x0cProjetoProtoP\x01\xa2\x02\x03HLWb\x06proto3'
+  serialized_pb=b'\n\rprojeto.proto\x12\x07projeto\"M\n\nChaveValor\x12\r\n\x05\x63have\x18\x01 \x01(\x04\x12\x0e\n\x06versao\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x12\r\n\x05\x64\x61\x64os\x18\x04 \x01(\x0c\"K\n\x0cMessageReply\x12\t\n\x01\x65\x18\x01 \x01(\t\x12\x0e\n\x06versao\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x12\r\n\x05\x64\x61\x64os\x18\x04 \x01(\x0c\x32\xe7\x01\n\x07Greeter\x12\x33\n\x03set\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12\x33\n\x03get\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12\x36\n\x06\x64\x65lete\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x12:\n\ntestandset\x12\x13.projeto.ChaveValor\x1a\x15.projeto.MessageReply\"\x00\x42\x30\n\x18io.grpc.examples.projetoB\x0cProjetoProtoP\x01\xa2\x02\x03HLWb\x06proto3'
 )
 
 
@@ -35,8 +35,8 @@ _CHAVEVALOR = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='chave', full_name='projeto.ChaveValor.chave', index=0,
-      number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -159,7 +159,7 @@ _GREETER = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=183,
-  serialized_end=472,
+  serialized_end=414,
   methods=[
   _descriptor.MethodDescriptor(
     name='set',
@@ -192,19 +192,9 @@ _GREETER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='del_vers',
-    full_name='projeto.Greeter.del_vers',
-    index=3,
-    containing_service=None,
-    input_type=_CHAVEVALOR,
-    output_type=_MESSAGEREPLY,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
     name='testandset',
     full_name='projeto.Greeter.testandset',
-    index=4,
+    index=3,
     containing_service=None,
     input_type=_CHAVEVALOR,
     output_type=_MESSAGEREPLY,

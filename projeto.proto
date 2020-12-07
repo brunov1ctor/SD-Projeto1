@@ -26,13 +26,12 @@ service Greeter {
   rpc set(ChaveValor) returns (MessageReply) {}
   rpc get(ChaveValor) returns (MessageReply) {}
   rpc delete(ChaveValor) returns (MessageReply) {}
-  rpc del_vers(ChaveValor) returns (MessageReply) {}
   rpc testandset(ChaveValor) returns (MessageReply) {}
 }
 
 
 message ChaveValor {
-	double chave = 1;
+	uint64 chave = 1;
 	int64 versao = 2;
 	int64 timestamp = 3; 
 	bytes dados = 4;

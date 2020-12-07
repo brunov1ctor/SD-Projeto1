@@ -69,6 +69,7 @@ def write_db(t):
         
 #------------------------------------------------------------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------------------------------------------------------------
 class Greeter(projeto_pb2_grpc.GreeterServicer):
 
     
@@ -107,52 +108,67 @@ class Greeter(projeto_pb2_grpc.GreeterServicer):
                 dados=None)
         finally:
             lock.reader_release()
-    
+			
     def delete(self, request, context):
+        if request.versao == 0:
+            e,vers,ts,data = self.delete_no_vers(request,context)
+        else:
+            e,vers,ts,data = self.del_vers123(request,context)
+
+        return projeto_pb2.MessageReply(e=e,
+        versao=vers, timestamp= ts,
+        dados=data)
+			
+    def delete_no_vers(self, request, context):
         print("#############State server: ##############")
         
         lock.writer_acquire()
         try:
-            if request.chave in dicionario:            
+            if request.chave in dicionario:
+                e = 'SUCCESS'
+                vers = dicionario[int(request.chave)][0]
+                ts = dicionario[int(request.chave)][1]
+                data = dicionario[int(request.chave)][2]
+
                 del dicionario[int(request.chave)]  
                 print(dicionario)
 
-                return projeto_pb2.MessageReply(e='SUCCESS',
-                versao=None, timestamp= None,
-                dados=None)
+                return e,vers,ts,data
             else:
-                return projeto_pb2.MessageReply(e='ERROR',
-                versao=None, timestamp=None,
-                dados=None)
+                e = 'ERROR'
+                return e,None,None,None
         finally:
             lock.writer_release()
     
-    def del_vers(self, request, context):
+    def del_vers123(self, request, context):
         print("#############State server: ##############")
         
         lock.writer_acquire()
         try:
             if request.chave in dicionario:
                 if  request.versao == dicionario[int(request.chave)][0]:
+                    e = 'SUCCESS'
+                    vers = request.versao
+                    ts = dicionario[int(request.chave)][1]
+                    data = dicionario[int(request.chave)][2]
+
                     del dicionario[request.chave]     
                     print(dicionario)
 
-                    return projeto_pb2.MessageReply(e='SUCCESS',
-                    versao=None, timestamp= None,
-                    dados=None)
+                    return e,vers,ts,data
                 else:
                     print(dicionario)
+                    e = 'ERROR_WV'
+                    vers = dicionario[request.chave][0]
+                    ts = dicionario[int(request.chave)][1]
+                    data = dicionario[int(request.chave)][2]
                     
-                    return projeto_pb2.MessageReply(e='ERROR_WV',
-                    versao= dicionario[request.chave][0], timestamp= dicionario[request.chave][1],
-                    dados=dicionario[request.chave][2])
+                    return e,vers,ts,data
                     
             else:
                 print(dicionario)
-                
-                return projeto_pb2.MessageReply(e='ERROR_NE',
-                versao=None, timestamp= None,
-                dados=None)
+                e = 'ERROR_NE'
+                return e,None,None,None
         finally:
             lock.writer_release()
 
