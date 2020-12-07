@@ -53,6 +53,7 @@ def read_db():
         f = open('backup.txt','r')
         global dicionario
         dicionario = ast.literal_eval(f.read())
+        
     finally:
         lock.writer_release
 
@@ -64,6 +65,7 @@ def write_db(t):
             f = open('backup.txt','w')
             f.write(str(dicionario))
             f.close()
+            
         finally:
             lock.writer_release()
         
@@ -209,7 +211,9 @@ def serve():
 if __name__ == '__main__':
     logging.basicConfig()
     thread_read = ThreadRead()
-    thread_write = ThreadWrite(10)
+    print('Insira de quanto em quanto tempo o servidor deve salvar os dados em disco (Int) : ')
+    t = int(input())
+    thread_write = ThreadWrite(t)
     thread_read.setDaemon(True)
     thread_write.setDaemon(True)
     thread_read.start()

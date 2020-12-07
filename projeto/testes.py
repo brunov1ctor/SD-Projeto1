@@ -21,7 +21,7 @@ import grpc
 import projeto_pb2
 import projeto_pb2_grpc
 
-
+#Parâmetro cliente é usado para diferenciar varios clientes simultaneos.
 def testes(cliente=1):
 
     print('##########################################')
