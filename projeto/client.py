@@ -54,6 +54,8 @@ def menu():
       chave = menuChave('pesquisar')
       response = stub.get(projeto_pb2.ChaveValor(chave=chave, versao=valor[0], timestamp=valor[1], dados=valor[2]))
       print("Tentou buscar chave. Resposta do servidor: " + response.e)
+      if str(response.e) == 'SUCCESS':
+        print('Chave encontrada: {' + str(chave) + ': (' + str(response.versao) + ', ' + str(response.timestamp) + ', ' + str(response.dados) + ')')
 
     elif resposta.lower() == 'del':
       chave = menuChave('deletar')
@@ -73,8 +75,8 @@ def menu():
     elif resposta.lower() == 'testandset':
       chave = menuChave('atualizar','chave antiga')
       versao = menuChave('atualizar','versão antiga')
-      valor = menuChaveValor()[1]
-      response = stub.testandset(projeto_pb2.ChaveValor(chave=chave, versao=versao, timestamp=valor[1], dados=valor[2]))
+      v = menuTestAndSet()
+      response = stub.testandset(projeto_pb2.ChaveValor(chave=chave, versao=versao, timestamp=v[0], dados=v[1]))
       print("Tentou testar e dar set na chave. Resposta do servidor: " + response.e)
 
     else:
@@ -87,9 +89,14 @@ def menuChaveValor(): #Pede para o usuário inserir um par chave valor corretame
   chave = menuChave('')
   valor = menuChave('', 'versão')
   #  timestamp = menuChave('', 'timestamp')
-  timestamp = int(str(datetime.datetime.now().timestamp()).replace('.', ''));
+  timestamp = int(str(datetime.datetime.now().timestamp()).replace('.', ''))
   dados = bytes(input('Insira os dados desejados:\n'),'utf-8')
   return (chave,(valor, timestamp, dados))
+
+def menuTestAndSet():
+  timestamp = int(str(datetime.datetime.now().timestamp()).replace('.', ''))
+  dados = bytes(input('Insira os novos dados desejados:\n'),'utf-8')
+  return (timestamp, dados)
 
 
 def menuChave(verb='', subst='chave'):
